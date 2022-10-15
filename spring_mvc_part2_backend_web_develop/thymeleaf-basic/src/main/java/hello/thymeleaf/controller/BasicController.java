@@ -1,9 +1,18 @@
 package hello.thymeleaf.controller;
 
+import lombok.Data;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/basic")
@@ -30,7 +39,7 @@ public class BasicController {
         list.add(userA);
         list.add(userB);
 
-        Map<String, Usre> map = new HashMap<>();
+        Map<String, User> map = new HashMap<>();
         map.put("userA", userA);
         map.put("userB", userB);
 
@@ -64,5 +73,12 @@ public class BasicController {
         public String hello(String data) {
             return "Hello " + data;
         }
+    }
+
+    // util
+    @GetMapping("/date")
+    public String date(Model model) {
+        model.addAttribute("localDateTime", LocalDateTime.now());
+        return "basic/date";
     }
 }
