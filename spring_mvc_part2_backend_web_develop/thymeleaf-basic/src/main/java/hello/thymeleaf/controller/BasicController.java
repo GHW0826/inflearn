@@ -20,6 +20,7 @@ public class BasicController {
         return "basic/text-unescaped";
     }
 
+    // springEL
     @GetMapping("/variable")
     public String variable(Model model) {
         User userA = new User("userA", 10);
@@ -48,6 +49,20 @@ public class BasicController {
         public User(String username, int age) {
             this.username = username;
             this.age = age;
+        }
+    }
+
+    // default object
+    @GetMapping("/basic-objects")
+    public String basicObjects(HttpSession session) {
+        session.setAttribute("sessionData", "Hello Session");
+        return "basic/basic-objects";
+    }
+
+    @Component("helloBean")
+    static class HelloBean {
+        public String hello(String data) {
+            return "Hello " + data;
         }
     }
 }
