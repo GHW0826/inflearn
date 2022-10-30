@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class SessionManger {
+public class SessionManager {
     public static final String SESSION_COOKIE_NAME = "mySessionId";
     private Map<String, Object> sessionStore = new ConcurrentHashMap<>();
 

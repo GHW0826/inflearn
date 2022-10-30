@@ -5,14 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import javax.websocket.Session;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class SessionMangerTest {
+class SessionManagerTest {
 
-    SessionManger sessionManager = new SessionManger();
+    SessionManager sessionManager = new SessionManager();
 
     @Test
     void sessionTest() {
