@@ -23,6 +23,7 @@ public class LogInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             //호출할 컨트롤러 메서드의모든 정보가 포함되어 있다.
             HandlerMethod hm = (HandlerMethod) handler;
+            // hm으로 정보로 로직 짤수 있음.
         }
         log.info("REQUEST [{}][{}][{}]", uuid, requestURI, handler);
         return true; //false 진행X
