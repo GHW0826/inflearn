@@ -89,8 +89,7 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String homeLoginV3ArgumentResolver(@Login Member loginMember, Model
-            model) {
+    public String homeLoginV3ArgumentResolver(@Login Member loginMember, Model model) {
         //세션에 회원 데이터가 없으면 home
         if (loginMember == null) {
             return "home";
