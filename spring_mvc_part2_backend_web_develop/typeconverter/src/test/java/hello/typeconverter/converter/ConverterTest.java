@@ -19,7 +19,7 @@ class ConverterTest {
         String result = converter.convert(10);
         assertThat(result).isEqualTo("10");
     }
-    
+
     @Test
     void stringToIpPort() {
         StringToIpPortConverter converter = new StringToIpPortConverter();
