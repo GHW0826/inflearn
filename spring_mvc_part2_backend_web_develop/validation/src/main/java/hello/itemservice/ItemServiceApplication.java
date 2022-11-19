@@ -11,3 +11,17 @@ public class ItemServiceApplication {
 	}
 
 }
+
+/* global validator apply
+@SpringBootApplication
+public class ItemServiceApplication implements WebMvcConfigurer {
+ public static void main(String[] args) {
+	 SpringApplication.run(ItemServiceApplication.class, args);
+ }
+
+ @Override
+ public Validator getValidator() {
+	 return new ItemValidator();
+ }
+}
+ */
