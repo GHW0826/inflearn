@@ -13,6 +13,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import java.lang.reflect.Array;
@@ -31,6 +33,9 @@ public class MemberRepositoryTest {
 
     @Autowired
     TeamJpaRepository teamJpaRepository;
+
+    @PersistenceContext
+    EntityManager em;
     @Test
     public void testMember() {
         Member member = new Member("memberA");
@@ -224,4 +229,21 @@ public class MemberRepositoryTest {
         assertThat(page.hasNext()).isTrue(); //다음 페이지가 있는가?
     }
      */
+
+    @Test
+    public void bulkUpdate() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+        //when
+        int resultCount = memberRepository.bulkAgePlus(20);
+        // 영속성 컨텍스트 날리기
+        em.flush();
+        em.clear();
+        //then
+        assertThat(resultCount).isEqualTo(3);
+    }
 }

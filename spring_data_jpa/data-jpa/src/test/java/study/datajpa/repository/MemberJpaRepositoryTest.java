@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import study.datajpa.entity.Member;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import java.util.List;
@@ -18,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MemberJpaRepositoryTest {
     @Autowired
     MemberJpaRepository memberJpaRepository;
+    @PersistenceContext
+    EntityManager em;
+
     @Test
     public void testMember() {
         Member member = new Member("memberA");
@@ -102,5 +107,31 @@ public class MemberJpaRepositoryTest {
         // then
         assertThat(members.size()).isEqualTo(3);
         assertThat(totalCount).isEqualTo(5);
+    }
+
+    @Test
+    public void bulkUpdate() throws Exception {
+        //given
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 19));
+        memberJpaRepository.save(new Member("member3", 20));
+        memberJpaRepository.save(new Member("member4", 21));
+        memberJpaRepository.save(new Member("member5", 40));
+        //when
+        int resultCount = memberJpaRepository.bulkAgePlus(10);
+
+        // 순수 JPA는 Modiying 안먹히는듯?
+        em.flush();
+        em.clear();
+
+        List<Member> member1 = memberJpaRepository.findByUsername("member1");
+
+        for (Member member : member1) {
+            System.out.println(member.getAge());
+        }
+        // 영속성 컨텍스트 날리기
+        assertThat(member1.get(0).getAge()).isEqualTo(11);
+        //then
+        assertThat(resultCount).isEqualTo(5);
     }
 }
