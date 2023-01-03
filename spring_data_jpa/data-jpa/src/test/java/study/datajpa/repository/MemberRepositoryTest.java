@@ -385,4 +385,46 @@ public class MemberRepositoryTest {
         //then
         Assertions.assertThat(result.size()).isEqualTo(1);
     }
+
+    @Test
+    public void NativeQuery() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        Member result = memberRepository.findByNativeQuery("m1");
+        System.out.println("result = " + result);
+        // then
+    }
+
+    @Test
+    public void NativeQuery2() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        Page<MemberProjection> result = memberRepository.findByNativeProjection(PageRequest.of(0, 10));
+        List<MemberProjection> getContent = result.getContent();
+        for (MemberProjection memberProjection : getContent) {
+            System.out.println("memberProjection.getUsername() = " + memberProjection.getUsername());
+            System.out.println("memberProjection.getUsername() = " + memberProjection.getTeamName());
+        }
+        // then
+    }
 }
