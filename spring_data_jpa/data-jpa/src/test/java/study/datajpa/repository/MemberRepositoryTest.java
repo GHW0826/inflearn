@@ -331,4 +331,58 @@ public class MemberRepositoryTest {
         System.out.println("findMember.createdDate = " + findMember.getCreatedDate());
         System.out.println("findMember.updatedDate = " + findMember.getUpdatedDate());
     }
+    
+    @Test
+    public void projections() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
+        //then
+       Assertions.assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void projections2() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+        Member m1 = new Member("m1", 10, teamA);
+        Member m2 = new Member("m2", 20, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        // when
+        List<UsernameOnlyDto> result = memberRepository.findProjections2ByUsername("m1");
+
+        List<UsernameOnlyDto> result2 = memberRepository.findProjectionsGenericByUsername("m1", UsernameOnlyDto.class);
+        List<NestedClosedProjection> result3 = memberRepository.findProjectionsGenericByUsername("m1", NestedClosedProjection.class);
+
+        for (UsernameOnlyDto usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
+
+        for (NestedClosedProjection nestedClosedProjection : result3) {
+            System.out.println("nestedClosedProjection = " + nestedClosedProjection.getUsername());
+            System.out.println("nestedClosedProjection = " + nestedClosedProjection.getTeam().getName());
+        }
+        //then
+        Assertions.assertThat(result.size()).isEqualTo(1);
+    }
 }
