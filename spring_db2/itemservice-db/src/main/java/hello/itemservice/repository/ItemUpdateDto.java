@@ -10,7 +10,6 @@ public class ItemUpdateDto {
 
     public ItemUpdateDto() {
     }
-
     public ItemUpdateDto(String itemName, Integer price, Integer quantity) {
         this.itemName = itemName;
         this.price = price;

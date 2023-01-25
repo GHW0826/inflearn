@@ -16,9 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-
     private final ItemService itemService;
-
     @GetMapping
     public String items(@ModelAttribute("itemSearch") ItemSearchCond itemSearch, Model model) {
         List<Item> items = itemService.findItems(itemSearch);
