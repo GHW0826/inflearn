@@ -1,4 +1,4 @@
-package ex1hello.config;
+package ex1hello.hello.config;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.jasypt.encryption.StringEncryptor;
