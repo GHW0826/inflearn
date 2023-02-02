@@ -1,5 +1,6 @@
-package hello.advanced.trace.strategy;
+package hello.advanced.trace.strategy.code;
 
+import hello.advanced.trace.strategy.Strategy;
 import lombok.extern.slf4j.Slf4j;
 
 /**
