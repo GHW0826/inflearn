@@ -1,8 +1,8 @@
 package hello.aop;
 
+import hello.aop.aop.AspectV6Advice;
 import hello.aop.order.OrderRepository;
 import hello.aop.order.OrderService;
-import hello.aop.order.aop.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @Import(AspectV6Advice.class)

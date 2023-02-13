@@ -1,21 +1,18 @@
-package hello.aop.order.aop;
+package hello.aop.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 @Slf4j
 @Aspect
-public class AspectV2 {
+public class AspectV1 {
     //hello.aop.order 패키지와 하위 패키지
-    @Pointcut("execution(* hello.aop.order..*(..))") //pointcut expression
-    private void allOrder(){} //pointcut signature
-
-    @Around("allOrder()")
+    @Around("execution(* hello.aop.order..*(..))")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
 
+        //join point 시그니처
         log.info("[log] {}", joinPoint.getSignature());
         return joinPoint.proceed();
     }
