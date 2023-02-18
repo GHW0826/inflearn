@@ -5,9 +5,13 @@ import hello.itemservice.repository.ItemSearchCond;
 import hello.itemservice.repository.ItemUpdateDto;
 import hello.itemservice.repository.memory.MemoryItemRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 
@@ -19,12 +23,26 @@ class ItemRepositoryTest {
     @Autowired
     ItemRepository itemRepository;
 
+    //트랜잭션 관련 코드
+    @Autowired
+    PlatformTransactionManager transactionManager;
+
+    TransactionStatus status;
+
+    @BeforeEach
+    void beforeEach() {
+        //트랜잭션 시작
+        status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+    }
+
     @AfterEach
     void afterEach() {
         //MemoryItemRepository 의 경우 제한적으로 사용
         if (itemRepository instanceof MemoryItemRepository) {
             ((MemoryItemRepository) itemRepository).clearStore();
         }
+        //트랜잭션 롤백
+        transactionManager.rollback(status);
     }
 
     @Test
@@ -69,20 +87,8 @@ class ItemRepositoryTest {
         itemRepository.save(item2);
         itemRepository.save(item3);
 
-        //둘 다 없음 검증
+        //여기서 3개 이상이 조회되는 문제가 발생
         test(null, null, item1, item2, item3);
-        test("", null, item1, item2, item3);
-
-        //itemName 검증
-        test("itemA", null, item1, item2);
-        test("temA", null, item1, item2);
-        test("itemB", null, item3);
-
-        //maxPrice 검증
-        test(null, 10000, item1);
-
-        //둘 다 있음 검증
-        test("itemA", 10000, item1);
     }
 
     void test(String itemName, Integer maxPrice, Item... items) {

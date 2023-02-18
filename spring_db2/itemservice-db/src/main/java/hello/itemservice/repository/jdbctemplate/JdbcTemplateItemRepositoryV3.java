@@ -42,7 +42,9 @@ public class JdbcTemplateItemRepositoryV3 implements ItemRepository {
     @Override
     public Item save(Item item) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(item);
+        System.out.println("param.toString() = " + param.toString());
         Number key = jdbcInsert.executeAndReturnKey(param);
+        System.out.println("key.toString() = " + key.toString());
         item.setId(key.longValue());
         return item;
     }
