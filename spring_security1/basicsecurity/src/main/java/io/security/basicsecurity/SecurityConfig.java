@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     }
                 })
                 .deleteCookies("remember-me");
-        
+
         http.rememberMe()
                 .rememberMeParameter("remember")
                 .tokenValiditySeconds(3600)
