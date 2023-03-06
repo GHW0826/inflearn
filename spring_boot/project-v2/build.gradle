@@ -7,7 +7,6 @@ plugins {
 group = 'hello'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -19,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    implementation files('libs/memory-v2.jar') //추가
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
