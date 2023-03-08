@@ -2,6 +2,7 @@ package hello.external;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.DefaultApplicationArguments;
 
 import java.util.List;
 import java.util.Set;
