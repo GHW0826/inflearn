@@ -15,5 +15,12 @@ public class AnonymousAuthenticationConfig extends WebSecurityConfigurerAdapter 
                 .anyRequest().authenticated();
 
         http.formLogin();
+
+        // 10. session Management
+//        http.sessionManagement()
+//                .maximumSessions(1)
+//                .maxSessionsPreventsLogin(false);
+        http.sessionManagement()
+                .sessionFixation().changeSessionId();
     }
 }
