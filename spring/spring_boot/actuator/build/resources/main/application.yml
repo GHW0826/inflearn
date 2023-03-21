@@ -1,6 +1,6 @@
 management:
   server:
-    port: 9292
+    port: 8080
   info:
     env:
       enabled: true
