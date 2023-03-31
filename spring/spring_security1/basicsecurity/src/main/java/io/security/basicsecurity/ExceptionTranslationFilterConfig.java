@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class ExceptionTranslationFilterConfig extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -36,7 +36,6 @@ public class ExceptionTranslationFilterConfig extends WebSecurityConfigurerAdapt
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        RequestCacheAwareFilter
         http.authorizeHttpRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/user").hasRole("USER")
