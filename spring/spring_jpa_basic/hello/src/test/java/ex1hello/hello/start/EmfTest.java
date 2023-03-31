@@ -237,4 +237,39 @@ class EmfTest {
         }
         emf.close();
     }
+
+    @Test
+    public void emf_detach() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+
+        try {
+            Member m1 = new Member(1L, "hello1");
+            Member m2 = new Member(2L, "hello2");
+            em.persist(m1);
+            em.persist(m2);
+
+            em.detach(m1);
+            em.clear();
+
+            Member result = em.find(Member.class, 1L);
+            result.setName("dirty");
+            System.out.println("result.getId() = " + result.getId());
+            System.out.println("result.getName() = " + result.getName());
+
+            em.close();
+            tx.commit();
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            // em이 db 커넥션을 물고 동작.
+            em.close();
+        }
+        emf.close();
+    }
 }
