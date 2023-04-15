@@ -12,9 +12,14 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping(value="/login")
-    public String login() throws Exception {
-        return "login";
-    }
+//    @GetMapping(value="/login_proc")
+//    public String login() throws Exception {
+//        return "home";
+//    }
+
+//    @GetMapping(value="/login")
+//    public String login() throws Exception {
+//        return "login";
+//    }
 
 }

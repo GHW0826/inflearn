@@ -1,6 +1,7 @@
 package security.corespringsecurity.security.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,10 +15,10 @@ import security.corespringsecurity.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("userDetailsService")
+@Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
+    @Autowired
     private UserRepository userRepository;
 
     @Override
@@ -29,9 +30,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> roles = new ArrayList<>();
+        System.out.println("account.getRole() = " + account.getRole());
         roles.add(new SimpleGrantedAuthority(account.getRole()));
 
         AccountContext accountContext = new AccountContext(account, roles);
+        System.out.println("accountContext = " + accountContext);
+        System.out.println("account = " + account);
         return accountContext;
     }
 }

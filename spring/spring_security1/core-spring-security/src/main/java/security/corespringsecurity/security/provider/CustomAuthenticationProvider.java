@@ -1,6 +1,7 @@
 package security.corespringsecurity.security.provider;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +15,9 @@ import security.corespringsecurity.security.service.AccountContext;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-
+    @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -26,9 +28,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         AccountContext accountContext = (AccountContext)userDetailsService.loadUserByUsername(username);
 
-        if (passwordEncoder.matches(password, accountContext.getPassword())) {
-            throw new BadCredentialsException("BadCredentialsException");
-        }
+//        if (passwordEncoder.matches(password, accountContext.getPassword())) {
+//            throw new BadCredentialsException("BadCredentialsException");
+//        }
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(

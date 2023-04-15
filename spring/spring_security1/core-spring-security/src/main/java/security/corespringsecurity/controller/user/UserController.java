@@ -2,6 +2,7 @@ package security.corespringsecurity.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,10 @@ import security.corespringsecurity.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
 
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @GetMapping(value="/mypage")

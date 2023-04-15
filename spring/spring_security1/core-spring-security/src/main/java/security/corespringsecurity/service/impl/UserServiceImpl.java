@@ -13,10 +13,12 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
     @Override
     @Transactional
     public void createUser(Account account) {
+        account.setRole("USER");
         userRepository.save(account);
     }
 }

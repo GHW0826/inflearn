@@ -2,6 +2,7 @@ package security.corespringsecurity.security.config;
 
 import ch.qos.logback.core.encoder.Encoder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        auth.inMemoryAuthentication().withUser("admin").password(password).roles("ADMIN", "USER", "MANAGER");
 //    }
 
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
@@ -41,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider());
     }
 
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         return new CustomAuthenticationProvider();
     }
@@ -59,12 +62,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "users").permitAll()
+                .antMatchers("/", "/users").permitAll()
                 .antMatchers("/mypage").hasRole("USER")
                 .antMatchers("/message").hasRole("MANAGER")
                 .antMatchers("/config").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and()
-                .formLogin();
+        .and()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .loginProcessingUrl("/login_proc")
+                .permitAll();
     }
 }

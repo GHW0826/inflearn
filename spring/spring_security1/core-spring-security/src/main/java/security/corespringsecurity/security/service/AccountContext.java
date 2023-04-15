@@ -7,6 +7,7 @@ import security.corespringsecurity.domain.Account;
 import java.util.Collection;
 
 public class AccountContext extends User {
+
     private final Account account;
 
     public AccountContext(Account account, Collection<? extends GrantedAuthority> authorities) {
