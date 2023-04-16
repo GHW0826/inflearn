@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import security.corespringsecurity.security.handler.CustomAuthenticationSuccessHandler;
 import security.corespringsecurity.security.provider.CustomAuthenticationProvider;
 
 @Configuration
@@ -34,6 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        auth.inMemoryAuthentication().withUser("admin").password(password).roles("ADMIN", "USER", "MANAGER");
 //    }
 
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationDetailsSource FormAuthenticationDetailsSource;
 
@@ -77,6 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(FormAuthenticationDetailsSource)
+                .successHandler(customAuthenticationSuccessHandler)
                 .permitAll();
     }
 }
