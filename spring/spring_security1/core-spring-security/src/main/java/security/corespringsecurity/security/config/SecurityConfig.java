@@ -16,6 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import security.corespringsecurity.security.handler.CustomAuthenticationFailureHandler;
 import security.corespringsecurity.security.handler.CustomAuthenticationSuccessHandler;
 import security.corespringsecurity.security.provider.CustomAuthenticationProvider;
 
@@ -36,7 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
     @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    @Autowired
+    private AuthenticationFailureHandler customAuthenticationFailureHandler;
+
     @Autowired
     private AuthenticationDetailsSource FormAuthenticationDetailsSource;
 
@@ -69,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/users").permitAll()
+                .antMatchers("/", "/users", ,"user/login/**", "/login").permitAll()
                 .antMatchers("/mypage").hasRole("USER")
                 .antMatchers("/message").hasRole("MANAGER")
                 .antMatchers("/config").hasRole("ADMIN")
@@ -81,6 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(FormAuthenticationDetailsSource)
                 .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll();
     }
 }
