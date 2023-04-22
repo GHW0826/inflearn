@@ -7,8 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import security.corespringsecurity.domain.Account;
-import security.corespringsecurity.domain.AccountDto;
+import security.corespringsecurity.domain.entity.Account;
+import security.corespringsecurity.domain.dto.AccountDto;
 import security.corespringsecurity.service.UserService;
 
 @Controller

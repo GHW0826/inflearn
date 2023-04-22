@@ -6,7 +6,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.thymeleaf.util.StringUtils;
-import security.corespringsecurity.domain.AccountDto;
+import security.corespringsecurity.domain.dto.AccountDto;
 import security.corespringsecurity.security.token.AjaxAuthenticationToken;
 
 import javax.servlet.ServletException;
