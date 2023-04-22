@@ -17,7 +17,6 @@ import security.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
 import security.corespringsecurity.security.handler.AjaxAccessDeniedHandler;
 import security.corespringsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import security.corespringsecurity.security.handler.AjaxAuthenticationSuccessHandler;
-import security.corespringsecurity.security.handler.CustomAccessDeniedHandler;
 import security.corespringsecurity.security.provider.AjaxAuthenticationProvider;
 
 @Configuration
@@ -60,6 +59,17 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(ajaxAccessDeniedHandler());
 
         http.csrf().disable();
+
+        customConfigurerAjax(http);
+    }
+
+    private void customConfigurerAjax(HttpSecurity http) throws Exception {
+        http
+                .apply(new AjaxLoginConfigurer<>())
+                .successHandlerAjax(ajaxAuthenticationSuccessHandler())
+                .failureHandlerAjax(ajaxAuthenticationFailureHandler())
+                .setAuthenticationManager(authenticationManagerBean())
+                .loginProcessingUrl("/api/login");
     }
 
     @Bean
