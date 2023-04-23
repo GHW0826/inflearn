@@ -8,9 +8,10 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
@@ -43,6 +44,10 @@ import security.corespringsecurity.security.voter.IpAddressVoter;
 import security.corespringsecurity.service.SecurityResourceService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.Filter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -88,6 +93,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
+        return filterSecurityInterceptor;
+    }
+
+    @Bean
+    public AccessDecisionManager affirmativeBased() {
+        AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecisionVoters());
+        return affirmativeBased;
+    }
+
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         return new CustomAuthenticationProvider();
     }
@@ -111,10 +131,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/users", "user/login/**", "/login").permitAll()
-                .antMatchers("/mypage").hasRole("USER")
-                .antMatchers("/message").hasRole("MANAGER")
-                .antMatchers("/config").hasRole("ADMIN")
+                // customFilterSecurityInterceptor 추가로 여기의 인가 로직은 동작하지 않음.
+//                .antMatchers("/", "/users", "user/login/**", "/login").permitAll()
+//                .antMatchers("/mypage").hasRole("USER")
+//                .antMatchers("/message").hasRole("MANAGER")
+//                .antMatchers("/config").hasRole("ADMIN")
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
@@ -127,11 +148,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
         http.addFilterBefore(permitAllFilter(), FilterSecurityInterceptor.class);
+        http.addFilterAt(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler());
     }
-
     @Bean
     private AccessDeniedHandler accessDeniedHandler() {
         CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
@@ -151,11 +172,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public PermitAllFilter permitAllFilter () {
+    public PermitAllFilter permitAllFilter () throws Exception {
         String[] permitAllPattern = {"/", "/index", "/home", "/login", "/errorpage/**"};
         PermitAllFilter permitAllFilter = new PermitAllFilter (permitAllPattern);
-        permitAllFilter.setAccessDecisionManager(accessDecisionManager);
-        permitAllFilter.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
+        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
         permitAllFilter.setRejectPublicInvocations(false);
         return permitAllFilter;
     }

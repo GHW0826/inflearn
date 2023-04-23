@@ -17,6 +17,9 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
 
     private SecurityResourceService securityResourceService;
 
+    public UrlFilterInvocationSecurityMetadataSource() {
+
+    }
     public UrlFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourcesMap, SecurityResourceService securityResourceService) {
         this.requestMap = resourcesMap;
         this.securityResourceService = securityResourceService;
@@ -43,8 +46,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         Set<ConfigAttribute> allAttributes = new HashSet<>();
 
-        for (Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : requestMap
-                .entrySet()) {
+        for (Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : requestMap.entrySet()) {
             allAttributes.addAll(entry.getValue());
         }
 
