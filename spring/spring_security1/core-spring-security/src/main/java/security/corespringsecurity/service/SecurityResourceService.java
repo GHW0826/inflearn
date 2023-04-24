@@ -1,13 +1,13 @@
 package security.corespringsecurity.service;
 
-import io.security.corespringsecurity.domain.entity.Resources;
-import io.security.corespringsecurity.repository.AccessIpRepository;
-import io.security.corespringsecurity.repository.ResourcesRepository;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
+import security.corespringsecurity.domain.entity.Resources;
+import security.corespringsecurity.repository.AccessIpRepository;
+import security.corespringsecurity.repository.ResourcesRepository;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,7 +35,6 @@ public class SecurityResourceService {
                 configAttributeList.add(new SecurityConfig(role.getRoleName()));
             });
             result.put(new AntPathRequestMatcher(re.getResourceName()),configAttributeList);
-
         });
         return result;
     }

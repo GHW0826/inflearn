@@ -2,6 +2,7 @@ package security.corespringsecurity.security.config;
 
 import ch.qos.logback.core.encoder.Encoder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -15,18 +16,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import security.corespringsecurity.security.factory.UrlResourceMapFactoryBean;
 import security.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
 import security.corespringsecurity.security.handler.CustomAccessDeniedHandler;
 import security.corespringsecurity.security.handler.CustomAuthenticationFailureHandler;
 import security.corespringsecurity.security.handler.CustomAuthenticationSuccessHandler;
+import security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import security.corespringsecurity.security.provider.CustomAuthenticationProvider;
+import security.corespringsecurity.service.SecurityResourceService;
 
 @Order(1)
 @Configuration
@@ -55,7 +61,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
+    private SecurityResourceService securityResourceService;
+
+    @Autowired
     private UserDetailsService userDetailsService;
+
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -112,5 +123,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
         accessDeniedHandler.setErrorPage("/denied");
         return accessDeniedHandler;
+    }
+
+    @Bean
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws  Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject(), securityResourceService);
+    }
+
+    private UrlResourceMapFactoryBean urlResourceMapFactoryBean() {
+        UrlResourceMapFactoryBean urlResourceMapFactoryBean = new UrlResourceMapFactoryBean(securityResourceService);
+        return urlResourceMapFactoryBean;
     }
 }
