@@ -22,11 +22,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import security.corespringsecurity.security.factory.UrlResourceMapFactoryBean;
 import security.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
+import security.corespringsecurity.security.filter.PermitAllFilter;
 import security.corespringsecurity.security.handler.CustomAccessDeniedHandler;
 import security.corespringsecurity.security.handler.CustomAuthenticationFailureHandler;
 import security.corespringsecurity.security.handler.CustomAuthenticationSuccessHandler;
@@ -114,6 +116,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(customAuthenticationFailureHandler)
                 .permitAll();
 
+        http.addFilterBefore(permitAllFilter(), FilterSecurityInterceptor.class);
+
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler());
     }
@@ -133,5 +137,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UrlResourceMapFactoryBean urlResourceMapFactoryBean() {
         UrlResourceMapFactoryBean urlResourceMapFactoryBean = new UrlResourceMapFactoryBean(securityResourceService);
         return urlResourceMapFactoryBean;
+    }
+
+
+    @Bean
+    public PermitAllFilter permitAllFilter () {
+        String[] permitAllPattern = {"/", "/index", "/home", "/login", "/errorpage/**"};
+        PermitAllFilter permitAllFilter = new PermitAllFilter (permitAllPattern);
+        permitAllFilter.setAccessDecisionManager(accessDecisionManager);
+        permitAllFilter.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
+        permitAllFilter.setRejectPublicInvocations(false);
+        return permitAllFilter;
     }
 }
