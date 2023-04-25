@@ -8,6 +8,11 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -35,6 +40,10 @@ import security.corespringsecurity.security.handler.CustomAuthenticationSuccessH
 import security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import security.corespringsecurity.security.provider.CustomAuthenticationProvider;
 import security.corespringsecurity.service.SecurityResourceService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Order(1)
 @Configuration
@@ -148,5 +157,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         permitAllFilter.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
         permitAllFilter.setRejectPublicInvocations(false);
         return permitAllFilter;
+    }
+
+    private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
+        List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+        accessDecisionVoters.add(roleVoter());
+
+        return accessDecisionVoters;
+    }
+
+    @Bean
+    private AccessDecisionVoter<? extends Object> roleVoter() {
+        RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
+        return roleHierarchyVoter;
+    }
+
+    @Bean
+    private RoleHierarchyImpl roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        return roleHierarchy;
     }
 }
