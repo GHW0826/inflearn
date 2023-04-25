@@ -39,6 +39,7 @@ import security.corespringsecurity.security.handler.CustomAuthenticationFailureH
 import security.corespringsecurity.security.handler.CustomAuthenticationSuccessHandler;
 import security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import security.corespringsecurity.security.provider.CustomAuthenticationProvider;
+import security.corespringsecurity.security.voter.IpAddressVoter;
 import security.corespringsecurity.service.SecurityResourceService;
 
 import java.util.ArrayList;
@@ -161,6 +162,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
         List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+        accessDecisionVoters.add(new IpAddressVoter());
         accessDecisionVoters.add(roleVoter());
 
         return accessDecisionVoters;
