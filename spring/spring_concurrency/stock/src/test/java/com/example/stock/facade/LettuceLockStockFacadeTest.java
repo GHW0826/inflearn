@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class LettuceLockStockFacadeTest {
+
     @Autowired
     private StockRepository stockRepository;
     @Autowired
@@ -39,9 +40,11 @@ class LettuceLockStockFacadeTest {
 
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
 
-        for (int i = 0; i < threadCount; ++i) {
+        for (Integer i = 0; i < threadCount; ++i) {
+            Integer finalI = i;
             executorService.submit(() -> {
                 try {
+                    System.out.println("finalI.toString() = " + finalI.toString());
                     lettuceLockStockFacade.decrease(1L, 1L);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -50,6 +53,7 @@ class LettuceLockStockFacadeTest {
                 }
             });
         }
+
         countDownLatch.await();
 
         Stock stock = stockRepository.findById(1L).orElseThrow();
