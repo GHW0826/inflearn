@@ -89,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        
         // provider가 userDetailsService를 사용해서 provider 등록 만으로 충분.
         // auth.userDetailsService(userDetailsService);
         auth.authenticationProvider(authenticationProvider());
