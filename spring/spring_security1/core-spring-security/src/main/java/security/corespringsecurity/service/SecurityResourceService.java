@@ -25,7 +25,7 @@ public class SecurityResourceService {
         this.accessIpRepository = accessIpRepository;
     }
 
-    public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResourceList(){
+    public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResourceList() {
 
         LinkedHashMap<RequestMatcher, List<ConfigAttribute>> result = new LinkedHashMap<>();
         List<Resources> resourcesList = resourcesRepository.findAllResources();

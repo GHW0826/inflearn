@@ -3,12 +3,17 @@ package security.corespringsecurity.controller.user;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
+import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
+import org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import security.corespringsecurity.domain.entity.Account;
 import security.corespringsecurity.domain.dto.AccountDto;
+import security.corespringsecurity.security.filter.PermitAllFilter;
+import security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import security.corespringsecurity.service.UserService;
 
 @Controller
@@ -23,8 +28,12 @@ public class UserController {
 
     @GetMapping(value="/mypage")
     public String myPage() throws Exception {
-        userService.order();
+        return "user/mypage";
+    }
 
+    @GetMapping("/order")
+    public String order() {
+        userService.order();
         return "user/mypage";
     }
 
