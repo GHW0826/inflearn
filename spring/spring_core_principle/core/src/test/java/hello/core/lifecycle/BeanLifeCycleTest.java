@@ -21,6 +21,13 @@ public class BeanLifeCycleTest {
         ac.close(); //스프링 컨테이너를 종료, ConfigurableApplicationContext 필요
     }
 
+    @Test
+    public void lifeCycleMethodTest() {
+        ConfigurableApplicationContext ac = new AnnotationConfigApplicationContext(LifeCycleConfig.class);
+        NetworkClientMethod client = ac.getBean(NetworkClientMethod.class);
+        ac.close(); //스프링 컨테이너를 종료, ConfigurableApplicationContext 필요
+    }
+
     @Configuration
     static class LifeCycleConfig {
         @Bean
@@ -33,6 +40,13 @@ public class BeanLifeCycleTest {
         @Bean
         public NetworkClientInterface networkClientInterface() {
             NetworkClientInterface networkClient = new NetworkClientInterface();
+            networkClient.setUrl("http://hello-spring.dev");
+            return networkClient;
+        }
+
+        @Bean(initMethod = "init", destroyMethod = "close")
+        public NetworkClientMethod networkClientMethod() {
+            NetworkClientMethod networkClient = new NetworkClientMethod();
             networkClient.setUrl("http://hello-spring.dev");
             return networkClient;
         }
