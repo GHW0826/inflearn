@@ -15,12 +15,16 @@ public class Member {
     private Long id;
     private String name;
     private Integer age;
+
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
     @Lob
     private String description;
 
