@@ -5,14 +5,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 @Entity
 @Table(name = "Member2")
 @Getter @Setter
 @NoArgsConstructor
 public class Member2 {
-
-
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
     private Long id;
@@ -24,6 +25,18 @@ public class Member2 {
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
+    // ManyToMany -> ManyToOne
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(name = "MEMBER_PRODUCT")
+//    private List<Product> products = new ArrayList<>();
+
 
     // 연관관계 편의 메소드
     public void changeTeam(Team team) {

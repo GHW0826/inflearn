@@ -17,6 +17,7 @@ public class Team {
 
     private String name;
 
+    // 양방향 처리
     @OneToMany(mappedBy = "team")
     private List<Member2> members = new ArrayList<>();
 
@@ -27,12 +28,12 @@ public class Team {
     }
 
     // member와 toString 서로 무한 루프
-//    @Override
-//    public String toString() {
-//        return "Team{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", members=" + members +
-//                '}';
-//    }
+    //    @Override
+    //    public String toString() {
+    //        return "Team{" +
+    //                "id=" + id +
+    //                ", name='" + name + '\'' +
+    //                ", members=" + members +
+    //                '}';
+    //    }
 }
