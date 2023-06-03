@@ -6,6 +6,13 @@
         <class>ex1hello.hello.entity.Member</class>
         <class>ex1hello.hello.entity.Member2</class>
         <class>ex1hello.hello.entity.Team</class>
+        <class>ex1hello.hello.entity.Locker</class>
+        <class>ex1hello.hello.entity.MemberProduct</class>
+        <class>ex1hello.hello.entity.Product</class>
+        <class>ex1hello.hello.entity.Item</class>
+        <class>ex1hello.hello.entity.Movie</class>
+        <class>ex1hello.hello.entity.Album</class>
+        <class>ex1hello.hello.entity.Book</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

@@ -13,7 +13,7 @@ import java.util.concurrent.locks.Lock;
 @Table(name = "Member2")
 @Getter @Setter
 @NoArgsConstructor
-public class Member2 {
+public class Member2 extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
     private Long id;

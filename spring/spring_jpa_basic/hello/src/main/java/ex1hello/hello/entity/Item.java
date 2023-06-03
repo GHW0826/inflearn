@@ -12,7 +12,6 @@ public class Item {
     private String name;
     private int price;
 
-
 	/*
 		@DiscriminatorColumn(name="DTYPE") 추가시
 		private String dtype; 추가 된다고 보면됨.
