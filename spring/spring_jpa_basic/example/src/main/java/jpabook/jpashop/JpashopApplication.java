@@ -1,5 +1,6 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.domain.Book;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 import org.aspectj.weaver.ast.Or;
@@ -21,6 +22,9 @@ public class JpashopApplication {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
+			Book book = new Book();
+			book.setName("JPA");
+			book.setAuthor("TEST");
 
 			Order order = new Order();
 //			order.addOrderItem(new OrderItem());
