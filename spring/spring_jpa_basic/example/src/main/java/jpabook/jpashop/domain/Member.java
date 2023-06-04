@@ -14,7 +14,7 @@ public class Member extends BaseEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "MEMBER_ID")
+    @OneToMany(mappedBy = "MEMBER_ID", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
     @Column(length = 10)
