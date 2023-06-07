@@ -19,7 +19,11 @@ public class Member extends BaseEntity {
 
     @Column(length = 10)
     private String name;
-    private String city;
-    private String street;
-    private String zeipcode;
+
+    @Embedded
+    private Address address;
+    // -> 값 타입으로 수정
+    //private String city;
+    //private String street;
+    //private String zeipcode;
 }
