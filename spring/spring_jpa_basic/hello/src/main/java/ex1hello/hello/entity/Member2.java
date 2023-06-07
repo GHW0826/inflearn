@@ -7,7 +7,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
 @Entity
@@ -78,5 +80,24 @@ public class Member2 extends BaseEntity {
     //    private String city;
     //    private String street;
     //    private String zipcode;
+
+
+    // 값 타입 컬렉션 (기본적으로 값 타입 컬렉션은 지연 로딩)
+    @Embedded
+    private Address homeAddress2;
+
+    // 지연로딩 설정
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name="FAVORITE_FOOD",
+            joinColumns = @JoinColumn(name="MEMBER_ID")
+    )
+    @Column(name="FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(name="ADDRESS",
+        joinColumns = @JoinColumn(name="MEMBER_ID")
+    )
+    private List<Address> addressHistory = new ArrayList<>();
 
 }
