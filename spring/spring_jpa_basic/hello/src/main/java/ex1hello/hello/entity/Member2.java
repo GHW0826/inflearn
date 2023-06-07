@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -55,4 +56,27 @@ public class Member2 extends BaseEntity {
                 ", team=" + team +
                 '}';
     }
+
+    // Embedded, Embeddable 둘중 하나만 써도 되지만 가시성을 위해 둘다 넣는거 권장
+    @Embedded
+    private Period period;
+
+    // 같은 임베디드 타입을 여러번 사용시 컬럼 중복이 되서 오버라이드
+    @Embedded
+    @AttributeOverrides({ @AttributeOverride(name="startDate", column=@Column(name="work_start")),
+                         @AttributeOverride(name="endDate", column=@Column(name="work_end")) })
+    private Period workdPeriod;
+
+    //->Period
+    //    private LocalDateTime startDate;
+    //    private LocalDateTime endDate;
+
+    // Embedded, Embeddable 둘중 하나만 써도 되지만 가시성을 위해 둘다 넣는거 권장
+    @Embedded
+    private Address homeAddress;
+    //-> Address
+    //    private String city;
+    //    private String street;
+    //    private String zipcode;
+
 }
