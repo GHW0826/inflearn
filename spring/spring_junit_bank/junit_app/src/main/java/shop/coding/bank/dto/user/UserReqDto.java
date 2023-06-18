@@ -7,19 +7,39 @@ import shop.coding.bank.domain.user.User;
 import shop.coding.bank.domain.user.UserEnum;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class UserReqDto {
+
+    // before controller
+    @Getter @Setter
+    public static class LoginReqDto {
+        private String username;
+        private String password;
+    }
 
     @Getter
     @Setter
     public static class JoinReqDto {
         // 유효성 검사.
+        // 영문, 숫자 가능, 길이 최소 2 ~ 20자 이내
+        @Pattern(regexp = "^[a-zA-Z0-9]{2,20}$", message = "영문/숫자 2~20자 이내로 작성해주세요")
         @NotEmpty // null 이거나 공백일 수 없다.
         private String username;
+
+        // 길이 4 ~ 20
+        @Size(min = 4, max = 20)
         @NotEmpty
         private String password;
+
+        // 이메일 형식
+        @Pattern(regexp = "^[a-zA-Z0-9]{2,10}@[a-zA-Z0-9]{2,6}\\.[a-zA-Z0-9]{2,4}$", message = "이메일 형식으로 작성해주세요")
         @NotEmpty
         private String email;
+
+        // 영어, 한글, 1 ~ 20
+        @Pattern(regexp = "^[a-zA-Z가-힣]{1,20}$", message = "한글/영문 1~20자 이내로 작성해주세요")
         @NotEmpty
         private String fullname;
 

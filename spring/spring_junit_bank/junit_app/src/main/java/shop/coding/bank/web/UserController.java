@@ -1,7 +1,6 @@
 package shop.coding.bank.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.coding.bank.dto.ResponseDto;
-import shop.coding.bank.dto.user.UserReqDto;
 import shop.coding.bank.dto.user.UserReqDto.JoinReqDto;
-import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.JoinRespDto;
 import shop.coding.bank.service.UserService;
 
@@ -38,15 +35,6 @@ public class UserController {
             @RequestBody @Valid JoinReqDto joinReqDto,
             BindingResult bindingResult
     ) {
-
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errorMap = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-            return new ResponseEntity<>(new ResponseDto<>(-1, "유효성 검사 실패", errorMap.toString()), HttpStatus.BAD_REQUEST);
-        }
-
         JoinRespDto joinRespDto = userService.회원가입(joinReqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입 성공", joinRespDto), HttpStatus.CREATED);
     }

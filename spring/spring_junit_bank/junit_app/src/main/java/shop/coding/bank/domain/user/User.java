@@ -28,7 +28,7 @@ public class User { // extends 시간 설정 (상속)
     @Column(nullable = false, length = 20)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private String fullname;
 
     @Enumerated(EnumType.STRING)
