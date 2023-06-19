@@ -7,12 +7,13 @@ import shop.coding.bank.domain.account.Account;
 import shop.coding.bank.domain.account.AccountRepository;
 import shop.coding.bank.domain.user.User;
 import shop.coding.bank.domain.user.UserRepository;
-import shop.coding.bank.dto.account.AccountReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
-import shop.coding.bank.dto.account.AccountRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
+import shop.coding.bank.dto.user.UserRespDto;
+import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
 import shop.coding.bank.handler.ex.CustomApiException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -26,6 +27,33 @@ public class AccountService {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
     }
+
+    @Transactional
+    public void 계좌삭제(Long number, Long userId) {
+        // 1. 계좌 확인
+        Account accountPS = accountRepository.findByNumber(number).orElseThrow(
+                () -> new CustomApiException("계좌를 찾을 수 없습니다")
+        );
+
+        // 2. 계좌 소유자 확인
+        accountPS.checkOwner(userId);
+
+        // 3. 계좌 삭제
+        accountRepository.deleteById(accountPS.getId());
+    }
+
+
+
+    public AccountListRespDto 계좌목록보기_유저별(Long userId) {
+        // User거 DB에 있는지 검증 겸 유저 엔티티 가져오기
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new CustomApiException("유저를 찾을 수 없습니다.")
+        );
+
+        // 유저의 모든 계좌 목록.
+        List<Account> accountListPS = accountRepository.findByUser_id(userId);
+        return new AccountListRespDto(userPS, accountListPS);
+    };
 
     // 체크는 서비스의 역할이 아님, 컨트롤러가 함.
     @Transactional

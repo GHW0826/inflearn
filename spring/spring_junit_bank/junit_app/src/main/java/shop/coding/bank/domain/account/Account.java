@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.parameters.P;
 import shop.coding.bank.domain.user.User;
+import shop.coding.bank.handler.ex.CustomApiException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,5 +54,12 @@ public class Account {
         this.user = user;
         this.createAt = createAt;
         this.updatedAt = updatedAt;
+    }
+
+    // Lazy 로딩이어도 id를 조회할때는 select 쿼리가 날아가지 않는다.
+    public void checkOwner(Long userId) {
+        if (user.getId() != userId) {
+            throw new CustomApiException("계좌 소유자가 아닙니다");
+        }
     }
 }
