@@ -13,14 +13,16 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name ="account_tb")
+@Table(name ="account_tb", indexes = {
+        @Index(name = "idx_account_number", columnList = "number")
+})
 @Entity
 @Getter
 public class Account {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 20)
+    @Column(unique = true, nullable = false, length = 4)
     private Long number; // 계좌 번호
     @Column(nullable = false, length = 4)
     private Long password; // 계좌 비번
