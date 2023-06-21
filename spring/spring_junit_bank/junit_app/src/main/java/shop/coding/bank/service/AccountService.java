@@ -5,9 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.coding.bank.domain.account.Account;
 import shop.coding.bank.domain.account.AccountRepository;
+import shop.coding.bank.domain.transaction.Transaction;
+import shop.coding.bank.domain.transaction.TransactionEnum;
+import shop.coding.bank.domain.transaction.TransactionRepository;
 import shop.coding.bank.domain.user.User;
 import shop.coding.bank.domain.user.UserRepository;
+import shop.coding.bank.dto.account.AccountReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.coding.bank.dto.account.AccountRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
@@ -21,11 +28,46 @@ import java.util.Optional;
 public class AccountService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public AccountService(UserRepository userRepository, AccountRepository accountRepository) {
+    public AccountService(UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
+    }
+
+    // 인증이 필요 없다.
+    @Transactional
+    public AccountDepositRespDto 계좌입금(AccountDepositReqDto accountDepositReqDto) {
+        // ATM -> 누군가의 계좌
+
+        // 0원 체크 (validation으로 해도 됨)
+        if (accountDepositReqDto.getAmount() <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
+        }
+        // 입금계좌 확인
+        Account depositAccountPS = accountRepository.findByNumber(accountDepositReqDto.getNumber()).orElseThrow(
+                ()-> new CustomApiException("계좌를 찾을 수 없습니다")
+        );
+
+        // 입금 (해당 계좌 balacn 조정 - update문 - 더티체킹)
+        depositAccountPS.deposit(accountDepositReqDto.getAmount());
+
+        // 거래내역 남기기
+        Transaction transaction = Transaction.builder()
+                .depositAccount(depositAccountPS)
+                .withdrawAccount(null)
+                .depositAccountBalance(depositAccountPS.getBalance())
+                .withdrawAccountBalance(null)
+                .amount(accountDepositReqDto.getAmount())
+                .gubun(TransactionEnum.DEPOSIT)
+                .sender("ATM")
+                .receiver(depositAccountPS.getNumber() + "")
+                .tel(accountDepositReqDto.getTel())
+                .build();
+        Transaction transactionPS = transactionRepository.save(transaction);
+        return new AccountDepositRespDto(depositAccountPS, transactionPS);
     }
 
     @Transactional

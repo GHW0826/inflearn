@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +18,15 @@ import shop.coding.bank.domain.user.UserRepository;
 import shop.coding.bank.dto.user.UserReqDto;
 import shop.coding.bank.dto.user.UserReqDto.JoinReqDto;
 
+import javax.persistence.EntityManager;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
+@ActiveProfiles("test")
+@Sql("classpath:db/teardown.sql")
+// @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class UserControllerTest extends DummyObject {
@@ -32,11 +38,13 @@ class UserControllerTest extends DummyObject {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EntityManager em;
 
     // 모든 메서드 실행 전에 실행.
     @BeforeEach
     public void setUp() {
-        userRepository.save(newUser("test", "테"));
+//        userRepository.save(newUser("test", "테"));
     }
 
     @Test

@@ -12,6 +12,7 @@ import shop.coding.bank.dto.ResponseDto;
 import shop.coding.bank.dto.account.AccountReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.coding.bank.dto.account.AccountRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
@@ -27,6 +28,16 @@ public class AccountController {
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    // 인증 필요 없음
+    @PostMapping("/account/deposit")
+    public ResponseEntity<?> depositAccount(
+            @RequestBody @Valid AccountReqDto.AccountDepositReqDto accountDepositReqDto,
+            BindingResult bindingResult
+    ) {
+        AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 입금 완료", accountDepositRespDto), HttpStatus.OK);
     }
 
     @PostMapping("/s/account")

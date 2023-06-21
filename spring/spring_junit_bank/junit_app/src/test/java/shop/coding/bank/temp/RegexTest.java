@@ -8,6 +8,32 @@ import java.util.regex.Pattern;
 public class RegexTest {
 
     @Test
+    public void account_gubun1_test() throws Exception {
+        String gubun = "DEPOSIT";
+        boolean result = Pattern.matches("^(DEPOSIT)$", gubun);
+        System.out.println("result = " + result);
+    }
+    @Test
+    public void account_gubun2_test() throws Exception {
+        String gubun = "TRANSFER";
+        boolean result = Pattern.matches("^(DEPOSIT|TRANSFER)$", gubun);
+        System.out.println("result = " + result);
+    }
+    @Test
+    public void account_tel1_test() throws Exception {
+        String tel = "010-3333-7777";
+        boolean result = Pattern.matches("^[0-9]{3}-[0-9]{4}-[0-9]{4}", tel);
+        System.out.println("result = " + result);
+    }
+    @Test
+    public void account_tel2_test() throws Exception {
+        String tel = "01033337777";
+        boolean result = Pattern.matches("^[0-9]{11}", tel);
+        System.out.println("result = " + result);
+    }
+
+
+    @Test
     public void 한글_test() throws Exception {
         String value = "가나";
         boolean result = Pattern.matches("^[가-힣]+$", value);
