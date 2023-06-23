@@ -22,6 +22,8 @@ import shop.coding.bank.domain.user.User;
 import shop.coding.bank.domain.user.UserRepository;
 import shop.coding.bank.dto.account.AccountReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.coding.bank.handler.ex.CustomApiException;
 
 import javax.persistence.EntityManager;
@@ -60,6 +62,74 @@ class AccountControllerTest extends DummyObject {
         Account ssarAccount1 = accountRepository.save(newAccount(1111L, ssar));
         Account cosAccount1 = accountRepository.save(newAccount(2222L, cos));
         em.flush();
+    }
+
+    @WithUserDetails(value = "cos", setupBefore = TestExecutionEvent.TEST_EXECUTION) // 디비에서 username=ssar 조회를 해서 세션에 담아주는 어노테이션
+    @Test
+    public void transferAccount_test() throws Exception {
+        // given
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
+
+        String requestBody = om.writeValueAsString(accountTransferReqDto);
+        System.out.println("requestBody = " + requestBody);
+        // when
+        ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.post("/api/s/account/transfer")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody1 = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody1);
+
+        //then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    @WithUserDetails(value = "cos", setupBefore = TestExecutionEvent.TEST_EXECUTION) // 디비에서 username=ssar 조회를 해서 세션에 담아주는 어노테이션
+    @Test
+    public void withdrawAccount_test() throws Exception {
+        // given
+        AccountWithdrawReqDto accountWithdrawReqDto = new AccountWithdrawReqDto();
+        accountWithdrawReqDto.setNumber(1111L);
+        accountWithdrawReqDto.setPassword(1234L);
+        accountWithdrawReqDto.setAmount(100L);
+        accountWithdrawReqDto.setGubun("WITHDRAW");
+
+        String requestBody = om.writeValueAsString(accountWithdrawReqDto);
+        System.out.println("requestBody = " + requestBody);
+        // when
+        ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.post("/api/s/account/withdraw")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody1 = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody1);
+
+        //then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    @Test
+    public void depositAccount_test() throws Exception {
+        // given
+        AccountReqDto.AccountDepositReqDto accountDepositReqDto = new AccountReqDto.AccountDepositReqDto();
+        accountDepositReqDto.setNumber(1111L);
+        accountDepositReqDto.setAmount(100L);
+        accountDepositReqDto.setGubun("DEPOSIT");
+        accountDepositReqDto.setTel("01088887777");
+
+        String requestBody = om.writeValueAsString(accountDepositReqDto);
+        System.out.println("requestBody = " + requestBody);
+
+        // when
+        ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.post("/api/deposit")
+                .content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody1 = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("responseBody = " + responseBody1);
+
+        //then
+        // dto 확인후 상태 코드 확인이 적당
+        resultActions.andExpect(status().isCreated());
     }
 
     /*

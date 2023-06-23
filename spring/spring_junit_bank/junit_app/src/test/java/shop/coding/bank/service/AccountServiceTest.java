@@ -11,12 +11,15 @@ import shop.coding.bank.config.dummy.DummyObject;
 import shop.coding.bank.domain.account.Account;
 import shop.coding.bank.domain.account.AccountRepository;
 import shop.coding.bank.domain.transaction.Transaction;
+import shop.coding.bank.domain.transaction.TransactionEnum;
 import shop.coding.bank.domain.transaction.TransactionRepository;
 import shop.coding.bank.domain.user.User;
 import shop.coding.bank.domain.user.UserRepository;
 import shop.coding.bank.dto.account.AccountReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.coding.bank.dto.account.AccountRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
@@ -46,6 +49,83 @@ class AccountServiceTest extends DummyObject {
 
     @Spy // 진짜 객체를 InjectMocks에 주입한다.
     private ObjectMapper om;
+
+    @Test
+    public void 계좌이체_test() throws Exception {
+
+        // given
+        Long userId = 1L;
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
+
+        User ssar =newMockUser(1L, "ssar", "ssar");
+        User cos =newMockUser(2L, "cos", "cos");
+        Account depositAccountPS = newMockAccount(1L, 1111L, 1000L, ssar);
+        Account withdrawAccountPS = newMockAccount(1L, 1111L, 1000L, cos);
+
+        // when
+        // 출금계좌와 입금계좌 동일계좌 확인
+        if (accountTransferReqDto.getWithdrawNumber().longValue() ==
+                accountTransferReqDto.getDepositNumber().longValue()) {
+            throw new CustomApiException("입출금계좌가 동일할 수 없습니다");
+        }
+
+        // 0원 체크 (validation으로 해도 됨)
+        if (accountTransferReqDto.getAmount() <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
+        }
+
+
+        // 출금 소유자 확인.(로그인한 사람과 동일한지)
+        withdrawAccountPS.checkOwner(userId);
+
+        // 출금계좌 비밀번호 확인
+        withdrawAccountPS.checkSamePassword(accountTransferReqDto.getWithdrawPassword());
+
+        // 출금계좌 잔액 확인
+        withdrawAccountPS.checkBalance(accountTransferReqDto.getAmount());
+
+        // 이체하기
+        withdrawAccountPS.withdraw(accountTransferReqDto.getAmount());
+        depositAccountPS.deposit(accountTransferReqDto.getAmount());
+
+        // then
+        assertThat(withdrawAccountPS.getBalance()).isEqualTo(900L);
+        assertThat(depositAccountPS.getBalance()).isEqualTo(1100L);
+    }
+
+    @Test
+    public void 계좌출금_test() throws Exception {
+
+        // given
+//        AccountWithdrawReqDto accountWithdrawReqDto = new AccountWithdrawReqDto();
+//        accountWithdrawReqDto.setNumber(1111L);
+//        accountWithdrawReqDto.setPassword(1234L);
+//        accountWithdrawReqDto.setAmount(100L);
+//        accountWithdrawReqDto.setGubun("WITHDRAW");
+        Long amount = 100L;
+        Long password = 1234L;
+        Long userId = 1L;
+
+        User ssar = newMockUser(1L, "ssar", "ssar");
+        Account ssarAccount = newMockAccount(1L, amount, 1000L, ssar);
+
+        // when
+        if (amount <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
+        }
+        ssarAccount.checkOwner(1L);
+        ssarAccount.checkSamePassword(1234L);
+        ssarAccount.checkBalance(amount);
+        ssarAccount.withdraw(amount);
+
+        // then
+        assertThat(ssarAccount.getBalance()).isEqualTo(900L);
+    }
 
     @Test
     public void 계좌입금_test2() throws Exception {

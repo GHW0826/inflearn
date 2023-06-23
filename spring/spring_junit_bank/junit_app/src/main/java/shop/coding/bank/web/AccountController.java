@@ -10,10 +10,15 @@ import org.springframework.validation.BindingResult;
 import shop.coding.bank.config.auth.LoginUser;
 import shop.coding.bank.dto.ResponseDto;
 import shop.coding.bank.dto.account.AccountReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountDepositReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
+import shop.coding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.coding.bank.dto.account.AccountRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
 import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.AccountTransferRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.AccountWithdrawRespDto;
 import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
 import shop.coding.bank.handler.ex.CustomForbiddenException;
@@ -30,10 +35,30 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @PostMapping("/account/s/account/transfer")
+    public ResponseEntity<?> transferAccount(
+            @RequestBody @Valid AccountTransferReqDto accountTransferReqDto,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        AccountTransferRespDto accountTransferRespDto = accountService.계좌이체(accountTransferReqDto, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 이체 완료", accountTransferRespDto), HttpStatus.OK);
+    }
+
+    @PostMapping("/account/s/account/withdraw")
+    public ResponseEntity<?> withdrawAccount(
+            @RequestBody @Valid AccountWithdrawReqDto accountWithReqDto,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        AccountWithdrawRespDto accountWithdrawRespDto = accountService.계좌출금(accountWithReqDto, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 출금 완료", accountWithdrawRespDto), HttpStatus.OK);
+    }
+
     // 인증 필요 없음
     @PostMapping("/account/deposit")
     public ResponseEntity<?> depositAccount(
-            @RequestBody @Valid AccountReqDto.AccountDepositReqDto accountDepositReqDto,
+            @RequestBody @Valid AccountDepositReqDto accountDepositReqDto,
             BindingResult bindingResult
     ) {
         AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
