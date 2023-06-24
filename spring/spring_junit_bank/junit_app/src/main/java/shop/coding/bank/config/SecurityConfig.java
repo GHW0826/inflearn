@@ -93,6 +93,9 @@ public class SecurityConfig {
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용
         configuration.setAllowCredentials(true); // 클라쪽에서 쿠키 요청 허용
 
+        // 설정하지 않으면 브라우저에서 자바스크립트로 못땡김
+        configuration.addExposedHeader("Authorization");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

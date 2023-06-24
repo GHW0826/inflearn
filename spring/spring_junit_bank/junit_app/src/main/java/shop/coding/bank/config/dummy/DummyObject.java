@@ -2,6 +2,7 @@ package shop.coding.bank.config.dummy;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import shop.coding.bank.domain.account.Account;
+import shop.coding.bank.domain.account.AccountRepository;
 import shop.coding.bank.domain.transaction.Transaction;
 import shop.coding.bank.domain.transaction.TransactionEnum;
 import shop.coding.bank.domain.user.User;
@@ -10,6 +11,83 @@ import shop.coding.bank.domain.user.UserEnum;
 import java.time.LocalDateTime;
 
 public class DummyObject {
+
+    protected static Transaction newTransferTransaction(
+            Account withdrawAccount,
+            Account depositAccount,
+            AccountRepository accountRepository
+    ) {
+        depositAccount.deposit(100L);
+        withdrawAccount.withdraw(100L);
+
+        // repository에서는 더티체킹 됨
+        // controller에서는 더티체킹 안됨
+        // 더티체킹이 안되서 해줘야함
+        if (accountRepository != null) {
+            accountRepository.save(depositAccount);
+            accountRepository.save(withdrawAccount);
+        }
+
+        Transaction transaction = Transaction.builder()
+                .withdrawAccount(withdrawAccount)
+                .depositAccount(depositAccount)
+                .withdrawAccountBalance(withdrawAccount.getBalance())
+                .depositAccountBalance(depositAccount.getBalance())
+                .amount(100L)
+                .gubun(TransactionEnum.WITHDRAW)
+                .sender(withdrawAccount.getNumber()+"")
+                .receiver(depositAccount.getNumber()+"")
+                .build();
+
+        return transaction;
+    }
+
+    protected static Transaction newWithdrawTransaction(Account account, AccountRepository accountRepository) {
+        account.withdraw(100L);
+
+        // 더티체킹이 안되서 해줘야함
+        if (accountRepository != null) {
+            accountRepository.save(account);
+        }
+
+        Transaction transaction = Transaction.builder()
+                .withdrawAccount(account)
+                .depositAccount(null)
+                .withdrawAccountBalance(account.getBalance())
+                .depositAccountBalance(null)
+                .amount(100L)
+                .gubun(TransactionEnum.WITHDRAW)
+                .sender(account.getNumber()+"")
+                .receiver("ATM")
+                .build();
+
+        return transaction;
+    }
+
+
+    protected static Transaction newDepositTransaction(Account account, AccountRepository accountRepository) {
+        account.deposit(100L);  // 1000이었으면 -> 900
+
+        // 더티체킹이 안되서 해줘야함
+        if (accountRepository != null) {
+            accountRepository.save(account);
+        }
+
+        Transaction transaction = Transaction.builder()
+                .withdrawAccount(null)
+                .depositAccount(account)
+                .withdrawAccountBalance(null)
+                .depositAccountBalance(account.getBalance())
+                .amount(100L)
+                .gubun(TransactionEnum.DEPOSIT)
+                .sender("ATM")
+                .receiver(account.getNumber()+"")
+                .tel("01022227777")
+                .build();
+        
+        return transaction;
+    }
+
 
     // 계좌 1111L 1000원
     // 입금 트랜잭션 -> 계좌 1100원 변경 -> 입금 트랜잭션 히스토리가 생성되어야 함.
