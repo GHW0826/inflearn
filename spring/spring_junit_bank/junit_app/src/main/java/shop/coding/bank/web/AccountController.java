@@ -15,10 +15,7 @@ import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.coding.bank.dto.account.AccountRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountTransferRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountWithdrawRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.*;
 import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
 import shop.coding.bank.handler.ex.CustomForbiddenException;
@@ -34,6 +31,21 @@ public class AccountController {
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
+
+    @GetMapping("/s/account/{number}")
+    public ResponseEntity<?> findDetailAccount(
+            @PathVariable Long number,
+            @RequestParam(value="gubun", defaultValue = "ALL") String gubun,
+            @RequestParam(value="page", defaultValue = "0") Integer page,
+            @AuthenticationPrincipal LoginUser loginUser
+    ) {
+        AccountDetailRespDto accountDetailRespDto =
+                accountService.계좌상세보기(number, loginUser.getUser().getId(), page);
+
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌상세보기 성공", accountDetailRespDto), HttpStatus.OK);
+    }
+
+
 
     @PostMapping("/account/s/account/transfer")
     public ResponseEntity<?> transferAccount(

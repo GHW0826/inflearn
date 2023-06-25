@@ -16,10 +16,7 @@ import shop.coding.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountTransferReqDto;
 import shop.coding.bank.dto.account.AccountReqDto.AccountWithdrawReqDto;
 import shop.coding.bank.dto.account.AccountRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountDepositRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountSaveRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountTransferRespDto;
-import shop.coding.bank.dto.account.AccountRespDto.AccountWithdrawRespDto;
+import shop.coding.bank.dto.account.AccountRespDto.*;
 import shop.coding.bank.dto.user.UserRespDto;
 import shop.coding.bank.dto.user.UserRespDto.AccountListRespDto;
 import shop.coding.bank.handler.ex.CustomApiException;
@@ -39,6 +36,24 @@ public class AccountService {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+    }
+
+    @Transactional
+    public AccountDetailRespDto 계좌상세보기(Long number, Long userId, Integer page) {
+        // 1. 구분값, 고정
+        String gubun = "ALL";
+
+        // 2. 계좌 찾기
+        Account accountPS = accountRepository.findByNumber(number).orElseThrow(
+                () -> new CustomApiException("계좌를 찾을 수 없습니다")
+        );
+
+        // 3. 계좌 소유자 확인
+        accountPS.checkOwner(userId);
+
+        // 4. 입출금목록보기
+        List<Transaction> transactonList = transactionRepository.findTransactonList(accountPS.getId(), gubun, page);
+        return new AccountDetailRespDto(accountPS, transactonList);
     }
 
     @Transactional
